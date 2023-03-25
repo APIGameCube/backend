@@ -8,20 +8,24 @@ require('dotenv').config();
 
 const server = express();
 server.use(cors());
+server.use(errorHandler)
 server.use(express.json()); //read request body
 
 const PORT = process.env.PORT || 3000;
+const client = new pg.Client(process.env.DATABASE_URL);
 
 //ROUTES
 server.get('/', homeHandler);
-server.get('/SearchMusic', SearchMusicHandler)// this handler's perpous is to fetch all the data.
+server.get('/searchAllGame', searchAllGameHandler);// this handler's perpous is to fetch all the data.
+server.post('/addGame', postGameHandler); // this handler's perpous is to add data (freegame) to the table.
+
 // server.use(errorHandler);
 
 function homeHandler(req, res) {
     res.status(200).send('HOME')
 }
 
-function SearchMusicHandler(request, res) {
+function searchAllGameHandler(request, res) {
 
 
 
@@ -49,15 +53,39 @@ function SearchMusicHandler(request, res) {
 
 }
 
+function postGameHandler(req,res) {
+    const favFreeGame = req.body; //by default we cant see the body content
+    console.log(favFreeGame);
+    const sql = `INSERT INTO favFreeGame (title, thumbnail, genre, platform, publisher, developer, release_date, short_description) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`;
+    const values = [favFreeGame.title, favFreeGame.thumbnail, favFreeGame.genre,  favFreeGame.platform, favFreeGame.publisher, favFreeGame.developer, favFreeGame.release_date, favFreeGame.short_description];
+    console.log(sql);
 
-// function errorHandler(error, req, res) {
-//     const err = {
-//         status: 500,
-//         message: error
-//     }
-//     res.status(500).send(err);
-// }
+    client.query(sql,values)
+    .then((data) => {
+        res.send("your data was added !");
+    })
+        .catch(error => {
+            // console.log(error);
+            errorHandler(error, req, res);
+        });
+}
 
-server.listen(PORT, () => {
-    console.log(`hii on ${PORT}`);
-})
+
+
+
+
+
+function errorHandler(error, req, res, next) {
+    const err = {
+        status: 500,
+        message: error
+    }
+    res.status(500).send(err);
+}
+
+client.connect()
+    .then(() => {
+        server.listen(PORT, () => {
+            console.log(`listening on ${PORT}`);
+        });
+    })
