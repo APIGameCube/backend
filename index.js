@@ -14,19 +14,28 @@ server.use(express.json()); //read request body
 const PORT = process.env.PORT || 3000;
 const client = new pg.Client(process.env.DATABASE_URL);
 
+
+
+
 //ROUTES
 server.get('/', homeHandler);
-server.get('/searchAllGame', searchAllGameHandler);// this handler's perpous is to fetch all the data.
+server.get('/allGame', allGameHandler);// this handler's perpous is to fetch all the data from the API.
+server.get('/allFavGame', allFavGameHandler);// this handler's perpous is to fetch all the data from the favfreegame relation.
+
 server.post('/addGame', postGameHandler); // this handler's perpous is to add data (FavFreegame) to the table.
 server.put('/addGame/:id', updateFavGameHandler);// this handler's perpous is to update the data in the favFreeGame table
+server.delete('/addGame/:id', deleteFavGameHandler);// this handler's perpous is to delete the data from favFreeGame table
 
-// server.use(errorHandler);
+
+
+
+
 
 function homeHandler(req, res) {
     res.status(200).send('HOME')
 }
 
-function searchAllGameHandler(request, res) {
+function allGameHandler(request, res) {
 
 
 
@@ -34,7 +43,7 @@ function searchAllGameHandler(request, res) {
         method: 'GET',
         url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
         headers: {
-            'X-RapidAPI-Key': '04df37f83fmsh09e19e247d3adefp12b631jsnfc3f7ce0007e',
+            'X-RapidAPI-Key': process.env.APIKey,
             'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
         }
     };
@@ -54,11 +63,23 @@ function searchAllGameHandler(request, res) {
 
 }
 
+function allFavGameHandler(req, res) {
+    const sql = `SELECT * FROM favfreegame`;
+    client.query(sql)
+        .then((result) => {
+            res.status(200).send(result.rows);
+        })
+        .catch((error) => {
+            errorHandler(error, req, res);
+        })
+
+}
+
 function postGameHandler(req,res) {
     const favFreeGame = req.body; //by default we cant see the body content
     console.log(favFreeGame);
-    const sql = `INSERT INTO favFreeGame (title, thumbnail, genre, platform, publisher, developer, release_date, short_description) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`;
-    const values = [favFreeGame.title, favFreeGame.thumbnail, favFreeGame.genre,  favFreeGame.platform, favFreeGame.publisher, favFreeGame.developer, favFreeGame.release_date, favFreeGame.short_description];
+    const sql = `INSERT INTO favFreeGame (title, thumbnail, genre, platform, publisher, developer, release_date, short_description, game_url) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *;  `;
+    const values = [favFreeGame.title, favFreeGame.thumbnail, favFreeGame.genre,  favFreeGame.platform, favFreeGame.publisher, favFreeGame.developer, favFreeGame.release_date, favFreeGame.short_description, favFreeGame.game_url];
     console.log(sql);
 
     client.query(sql,values)
@@ -75,8 +96,8 @@ function updateFavGameHandler(req, res) {
     const id = req.params.id; //fetch path prameters
     const favFreeGame = req.body;
 
-    const sql = `UPDATE favFreeGame SET title=$1, thumbnail=$2, genre=$3, platform=$4, publisher=$5, developer=$6,release_date=$7, short_description=$8  WHERE id=${id} RETURNING *`     
-    const values = [favFreeGame.title, favFreeGame.thumbnail, favFreeGame.genre,  favFreeGame.platform, favFreeGame.publisher, favFreeGame.developer, favFreeGame.release_date, favFreeGame.short_description];
+    const sql = `UPDATE favFreeGame SET title=$1, thumbnail=$2, genre=$3, platform=$4, publisher=$5, developer=$6,release_date=$7, short_description=$8, game_url=$9  WHERE id=${id} RETURNING *`     
+    const values = [favFreeGame.title, favFreeGame.thumbnail, favFreeGame.genre,  favFreeGame.platform, favFreeGame.publisher, favFreeGame.developer, favFreeGame.release_date, favFreeGame.short_description, favFreeGame.game_url];
 
     client.query(sql, values)
         .then((result) => {
@@ -89,6 +110,27 @@ function updateFavGameHandler(req, res) {
                 .catch((error) => {
                     errorHandler(error, req, res);
                 })
+        })
+        .catch((error) => {
+            errorHandler(error, req, res);
+        })
+}
+
+function deleteFavGameHandler(req, res) {
+    const id = req.params.id;
+    const sql = `DELETE FROM favfreegame WHERE id=${id}`;
+    client.query(sql)
+        .then((result) => {
+            //send flower tabel content
+            const sql = `SELECT * FROM favfreegame`;
+            client.query(sql)
+                .then((result) => {
+                    res.status(200).send(result.rows);
+                })
+                .catch((error) => {
+                    errorHandler(error, req, res);
+                })
+
         })
         .catch((error) => {
             errorHandler(error, req, res);
