@@ -17,7 +17,8 @@ const client = new pg.Client(process.env.DATABASE_URL);
 //ROUTES
 server.get('/', homeHandler);
 server.get('/searchAllGame', searchAllGameHandler);// this handler's perpous is to fetch all the data.
-server.post('/addGame', postGameHandler); // this handler's perpous is to add data (freegame) to the table.
+server.post('/addGame', postGameHandler); // this handler's perpous is to add data (FavFreegame) to the table.
+server.put('/addGame/:id', updateFavGameHandler);// this handler's perpous is to update the data in the favFreeGame table
 
 // server.use(errorHandler);
 
@@ -68,6 +69,30 @@ function postGameHandler(req,res) {
             // console.log(error);
             errorHandler(error, req, res);
         });
+}
+
+function updateFavGameHandler(req, res) {
+    const id = req.params.id; //fetch path prameters
+    const favFreeGame = req.body;
+
+    const sql = `UPDATE favFreeGame SET title=$1, thumbnail=$2, genre=$3, platform=$4, publisher=$5, developer=$6,release_date=$7, short_description=$8  WHERE id=${id} RETURNING *`     
+    const values = [favFreeGame.title, favFreeGame.thumbnail, favFreeGame.genre,  favFreeGame.platform, favFreeGame.publisher, favFreeGame.developer, favFreeGame.release_date, favFreeGame.short_description];
+
+    client.query(sql, values)
+        .then((result) => {
+            //send flower tabel content
+            const sql = `SELECT * FROM favfreegame`;
+            client.query(sql)
+                .then((result) => {
+                    res.status(200).send(result.rows);
+                })
+                .catch((error) => {
+                    errorHandler(error, req, res);
+                })
+        })
+        .catch((error) => {
+            errorHandler(error, req, res);
+        })
 }
 
 
