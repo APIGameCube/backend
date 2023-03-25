@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS favFreeGame (
     publisher  VARCHAR(255),
     developer  VARCHAR(255),
     release_date  VARCHAR(255),
-    short_description VARCHAR(10000)
+    short_description VARCHAR(10000),
+    game_url VARCHAR(10000)
 
 );
