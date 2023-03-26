@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS favFreeGame;
 
 CREATE TABLE IF NOT EXISTS favFreeGame (
     id  SERIAL PRIMARY KEY,
+
     title  VARCHAR(255),
     thumbnail VARCHAR(10000),
     genre VARCHAR(255),
@@ -10,6 +11,8 @@ CREATE TABLE IF NOT EXISTS favFreeGame (
     developer  VARCHAR(255),
     release_date  VARCHAR(255),
     short_description VARCHAR(10000),
-    game_url VARCHAR(10000)
+    game_url VARCHAR(10000),
+    comment VARCHAR(10000)
+   
 
 );
