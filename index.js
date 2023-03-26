@@ -8,23 +8,26 @@ require('dotenv').config();
 
 const server = express();
 server.use(cors());
-server.use(errorHandler)
+// server.use(errorHandler)
 server.use(express.json()); //read request body
 
 const PORT = process.env.PORT || 3000;
 const client = new pg.Client(process.env.DATABASE_URL);
+
+// const allGameHandler = require('./Controlers/allGameHandler')
+// const postGameHandler = require('./Controlers/postGameHandler')
 
 
 
 
 //ROUTES
 server.get('/', homeHandler);
-server.get('/allGame', allGameHandler);// this handler's perpous is to fetch all the data from the API.
-server.get('/allFavGame', allFavGameHandler);// this handler's perpous is to fetch all the data from the favfreegame relation.
-
-server.post('/addGame', postGameHandler); // this handler's perpous is to add data (FavFreegame) to the table.
-server.put('/addGame/:id', updateFavGameHandler);// this handler's perpous is to update the data in the favFreeGame table
-server.delete('/addGame/:id', deleteFavGameHandler);// this handler's perpous is to delete the data from favFreeGame table
+server.get('/allGame', allGameHandler);// this handler's purpose is to fetch all the data from the API.
+server.get('/allFavGame', allFavGameHandler);// this handler's purpose is to fetch all the data from the favfreegame relation.
+ 
+server.post('/addGame', postGameHandler); // this handler's purpose is to add data (FavFreegame) to the table.
+server.put('/addGame/:id', updateFavGameHandler);// this handler's purpose is to update the data in the favFreeGame table
+server.delete('/addGame/:id', deleteFavGameHandler);// this handler's purpose is to delete the data from favFreeGame table
 
 
 
@@ -78,8 +81,8 @@ function allFavGameHandler(req, res) {
 function postGameHandler(req,res) {
     const favFreeGame = req.body; //by default we cant see the body content
     console.log(favFreeGame);
-    const sql = `INSERT INTO favFreeGame (title, thumbnail, genre, platform, publisher, developer, release_date, short_description, game_url) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *;  `;
-    const values = [favFreeGame.title, favFreeGame.thumbnail, favFreeGame.genre,  favFreeGame.platform, favFreeGame.publisher, favFreeGame.developer, favFreeGame.release_date, favFreeGame.short_description, favFreeGame.game_url];
+    const sql = `INSERT INTO favFreeGame (title, thumbnail, genre, platform, publisher, developer, release_date, short_description, game_url, comment) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *;  `;
+    const values = [favFreeGame.title, favFreeGame.thumbnail, favFreeGame.genre,  favFreeGame.platform, favFreeGame.publisher, favFreeGame.developer, favFreeGame.release_date, favFreeGame.short_description, favFreeGame.game_url,favFreeGame.comment];
     console.log(sql);
 
     client.query(sql,values)
@@ -96,8 +99,8 @@ function updateFavGameHandler(req, res) {
     const id = req.params.id; //fetch path prameters
     const favFreeGame = req.body;
 
-    const sql = `UPDATE favFreeGame SET title=$1, thumbnail=$2, genre=$3, platform=$4, publisher=$5, developer=$6,release_date=$7, short_description=$8, game_url=$9  WHERE id=${id} RETURNING *`     
-    const values = [favFreeGame.title, favFreeGame.thumbnail, favFreeGame.genre,  favFreeGame.platform, favFreeGame.publisher, favFreeGame.developer, favFreeGame.release_date, favFreeGame.short_description, favFreeGame.game_url];
+    const sql = `UPDATE favFreeGame SET title=$1, thumbnail=$2, genre=$3, platform=$4, publisher=$5, developer=$6,release_date=$7, short_description=$8, game_url=$9, comment=$10  WHERE id=${id} RETURNING *`     
+    const values = [favFreeGame.title, favFreeGame.thumbnail, favFreeGame.genre,  favFreeGame.platform, favFreeGame.publisher, favFreeGame.developer, favFreeGame.release_date, favFreeGame.short_description, favFreeGame.game_url, favFreeGame.comment];
 
     client.query(sql, values)
         .then((result) => {

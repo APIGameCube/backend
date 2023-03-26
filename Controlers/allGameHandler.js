@@ -1,3 +1,4 @@
+const axios = require('axios');
 
 function allGameHandler(request, res) {
 
@@ -26,3 +27,4 @@ function allGameHandler(request, res) {
 
 
 }
+module.exports = allGameHandler;
