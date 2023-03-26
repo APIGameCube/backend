@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 const client = new pg.Client(process.env.DATABASE_URL);
 
 // const allGameHandler = require('./Controlers/allGameHandler')
-// const postGameHandler = require('./Controlers/postGameHandler')
+// const {postGameHandler} = require('./Controlers/user.js')
 
 
 
@@ -24,10 +24,21 @@ const client = new pg.Client(process.env.DATABASE_URL);
 server.get('/', homeHandler);
 server.get('/allGame', allGameHandler);// this handler's purpose is to fetch all the data from the API.
 server.get('/allFavGame', allFavGameHandler);// this handler's purpose is to fetch all the data from the favfreegame relation.
+
  
 server.post('/addGame', postGameHandler); // this handler's purpose is to add data (FavFreegame) to the table.
-server.put('/addGame/:id', updateFavGameHandler);// this handler's purpose is to update the data in the favFreeGame table
-server.delete('/addGame/:id', deleteFavGameHandler);// this handler's purpose is to delete the data from favFreeGame table
+server.put('/addGame/:id', updateFavGameHandler);// this handler's purpose is to update the data in the favFreeGame table.
+server.delete('/addGame/:id', deleteFavGameHandler);// this handler's purpose is to delete the data from favFreeGame table.
+
+
+server.get('/shooterGames', filterShooterGamesHandler);//this handler's purpose is to filter the given data.
+server.get('/mmorpgGames', filterMmorpgGamesHandler);
+server.get('/strategyGames', filterStrategyGamesHandler);
+server.get('/fightingGames', filterFightingGamesHandler);
+
+
+
+
 
 
 
@@ -37,6 +48,9 @@ server.delete('/addGame/:id', deleteFavGameHandler);// this handler's purpose is
 function homeHandler(req, res) {
     res.status(200).send('HOME')
 }
+
+
+
 
 function allGameHandler(request, res) {
 
@@ -66,6 +80,9 @@ function allGameHandler(request, res) {
 
 }
 
+
+
+
 function allFavGameHandler(req, res) {
     const sql = `SELECT * FROM favfreegame`;
     client.query(sql)
@@ -77,6 +94,9 @@ function allFavGameHandler(req, res) {
         })
 
 }
+
+
+
 
 function postGameHandler(req,res) {
     const favFreeGame = req.body; //by default we cant see the body content
@@ -94,6 +114,9 @@ function postGameHandler(req,res) {
             errorHandler(error, req, res);
         });
 }
+
+
+
 
 function updateFavGameHandler(req, res) {
     const id = req.params.id; //fetch path prameters
@@ -119,6 +142,9 @@ function updateFavGameHandler(req, res) {
         })
 }
 
+
+
+
 function deleteFavGameHandler(req, res) {
     const id = req.params.id;
     const sql = `DELETE FROM favfreegame WHERE id=${id}`;
@@ -139,6 +165,110 @@ function deleteFavGameHandler(req, res) {
             errorHandler(error, req, res);
         })
 }
+
+
+
+
+
+
+function filterShooterGamesHandler(request, res) {
+
+
+
+    const options = {
+        method: 'GET',
+        url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+        params: {category: 'shooter'},
+        headers: {
+          'X-RapidAPI-Key': process.env.APIKey,
+          'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+        }
+      };
+
+    axios.request(options).then(function (response) {
+        console.log(response.data);
+        res.send(response.data);
+    }).catch(function (error) {
+        console.error(error);
+    });
+
+
+}
+function filterMmorpgGamesHandler(request, res) {
+
+
+
+    const options = {
+        method: 'GET',
+        url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+        params: {category: 'MMORPG'},
+        headers: {
+          'X-RapidAPI-Key': process.env.APIKey,
+          'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+        }
+      };
+
+    axios.request(options).then(function (response) {
+        console.log(response.data);
+        res.send(response.data);
+    }).catch(function (error) {
+        console.error(error);
+    });
+
+
+}
+
+function filterStrategyGamesHandler(request, res) {
+
+
+
+    const options = {
+        method: 'GET',
+        url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+        params: {category: 'Strategy'},
+        headers: {
+          'X-RapidAPI-Key': process.env.APIKey,
+          'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+        }
+      };
+
+    axios.request(options).then(function (response) {
+        console.log(response.data);
+        res.send(response.data);
+    }).catch(function (error) {
+        console.error(error);
+    });
+
+
+}
+
+function filterFightingGamesHandler(request, res) {
+
+
+
+    const options = {
+        method: 'GET',
+        url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+        params: {category: 'Fighting'},
+        headers: {
+          'X-RapidAPI-Key': process.env.APIKey,
+          'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+        }
+      };
+
+    axios.request(options).then(function (response) {
+        console.log(response.data);
+        res.send(response.data);
+    }).catch(function (error) {
+        console.error(error);
+    });
+
+
+}
+
+
+
+
 
 
 
