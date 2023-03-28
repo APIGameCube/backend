@@ -40,6 +40,8 @@ server.get('/MOBA', filterMOBAGamesHandler);
 server.get('/sports', filterSportsGamesHandler);
 server.get('/battelRoyal', battelRoyalsGamesHandler);
 server.get('/mmo', mmoGamesHandler);
+server.get('/search', searchGamesHandler);
+
 
 
 
@@ -48,6 +50,29 @@ function homeHandler(req, res) {
 }
 
 
+function searchGamesHandler(request, res) {
+    const title = request.query.title;
+  
+    const options = {
+      method: 'GET',
+      url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+      headers: {
+        'X-RapidAPI-Key': process.env.APIKey,
+        'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+      }
+    };
+  
+    axios.request(options)
+      .then(function (response) {
+        const games = response.data.filter((game) => game.title.toLowerCase().includes(title.toLowerCase()));
+        console.log(games);
+        res.send(games);
+      })
+      .catch(function (error) {
+        console.error(error);
+        res.status(500).send('Error retrieving games data');
+      });
+  }
 
 
 function allGameHandler(request, res) {
