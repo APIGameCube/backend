@@ -31,12 +31,16 @@ server.put('/addGame/:id', updateFavGameHandler);// this handler's purpose is to
 server.delete('/addGame/:id', deleteFavGameHandler);// this handler's purpose is to delete the data from favFreeGame table.
 
 
-server.get('/shooterGames', filterShooterGamesHandler);//this handler's purpose is to filter the given data.
-server.get('/mmorpgGames', filterMmorpgGamesHandler);
-server.get('/strategyGames', filterStrategyGamesHandler);
-server.get('/fightingGames', filterFightingGamesHandler);
-server.get('/MOBAGames', filterMOBAGamesHandler);
-server.get('/sportsGames', filterSportsGamesHandler);
+server.get('/shooter', filterShooterGamesHandler);//this handler's purpose is to filter the given data.
+server.get('/mmorpg', filterMmorpgGamesHandler);
+server.get('/strategy', filterStrategyGamesHandler);
+server.get('/fighting', FightingGamesHandler);
+server.get('/racing', RacingGamesHandler);
+server.get('/MOBA', filterMOBAGamesHandler);
+server.get('/sports', filterSportsGamesHandler);
+server.get('/battelRoyal', battelRoyalsGamesHandler);
+server.get('/mmo', mmoGamesHandler);
+
 
 
 function homeHandler(req, res) {
@@ -162,124 +166,238 @@ function deleteFavGameHandler(req, res) {
 
 
 
+function FightingGamesHandler(request, res) {
+    const genre = 'Fighting';
+  
+    const options = {
+      method: 'GET',
+      url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+      headers: {
+        'X-RapidAPI-Key': process.env.APIKey,
+        'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+      }
+    };
+  
+    axios.request(options)
+      .then(function (response) {
+        const games = response.data.filter((game) => game.genre.toLowerCase().includes(genre.toLowerCase()));
+        console.log(games);
+        res.send(games);
+      })
+      .catch(function (error) {
+        console.error(error);
+        res.status(500).send('Error retrieving games data');
+      });
+  }
 
+
+  
+function RacingGamesHandler(request, res) {
+    const genre = 'racing';
+  
+    const options = {
+      method: 'GET',
+      url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+      headers: {
+        'X-RapidAPI-Key': process.env.APIKey,
+        'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+      }
+    };
+  
+    axios.request(options)
+      .then(function (response) {
+        const games = response.data.filter((game) => game.genre.toLowerCase().includes(genre.toLowerCase()));
+        console.log(games);
+        res.send(games);
+      })
+      .catch(function (error) {
+        console.error(error);
+        res.status(500).send('Error retrieving games data');
+      });
+  }
+
+
+  
+function FightingGamesHandler(request, res) {
+    const genre = 'Fighting';
+  
+    const options = {
+      method: 'GET',
+      url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+      headers: {
+        'X-RapidAPI-Key': process.env.APIKey,
+        'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+      }
+    };
+  
+    axios.request(options)
+      .then(function (response) {
+        const games = response.data.filter((game) => game.genre.toLowerCase().includes(genre.toLowerCase()));
+        console.log(games);
+        res.send(games);
+      })
+      .catch(function (error) {
+        console.error(error);
+        res.status(500).send('Error retrieving games data');
+      });
+  }
+
+
+  
+function battelRoyalsGamesHandler(request, res) {
+    const genre = 'Battle Royale';
+  
+    const options = {
+      method: 'GET',
+      url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+      headers: {
+        'X-RapidAPI-Key': process.env.APIKey,
+        'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+      }
+    };
+  
+    axios.request(options)
+      .then(function (response) {
+        const games = response.data.filter((game) => game.genre.toLowerCase().includes(genre.toLowerCase()));
+        console.log(games);
+        res.send(games);
+      })
+      .catch(function (error) {
+        console.error(error);
+        res.status(500).send('Error retrieving games data');
+      });
+  }
 
 
 function filterShooterGamesHandler(request, res) {
-
-
-
+    const genre = 'Shooter';
+  
     const options = {
-        method: 'GET',
-        url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
-        params: { category: 'shooter' },
-        headers: {
-            'X-RapidAPI-Key': process.env.APIKey,
-            'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
-        }
+      method: 'GET',
+      url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+      headers: {
+        'X-RapidAPI-Key': process.env.APIKey,
+        'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+      }
     };
-
-    axios.request(options).then(function (response) {
-        console.log(response.data);
-        res.send(response.data);
-    }).catch(function (error) {
+  
+    axios.request(options)
+      .then(function (response) {
+        const games = response.data.filter((game) => game.genre.toLowerCase().includes(genre.toLowerCase()));
+        console.log(games);
+        res.send(games);
+      })
+      .catch(function (error) {
         console.error(error);
-    });
+        res.status(500).send('Error retrieving games data');
+      });
 
 
 }
+
+
+
 function filterMmorpgGamesHandler(request, res) {
 
-
-
+    const genre = 'mmorpg';
+  
     const options = {
-        method: 'GET',
-        url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
-        params: { category: 'MMORPG' },
-        headers: {
-            'X-RapidAPI-Key': process.env.APIKey,
-            'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
-        }
+      method: 'GET',
+      url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+      headers: {
+        'X-RapidAPI-Key': process.env.APIKey,
+        'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+      }
     };
-
-    axios.request(options).then(function (response) {
-        console.log(response.data);
-        res.send(response.data);
-    }).catch(function (error) {
+  
+    axios.request(options)
+      .then(function (response) {
+        const games = response.data.filter((game) => game.genre.toLowerCase().includes(genre.toLowerCase()));
+        console.log(games);
+        res.send(games);
+      })
+      .catch(function (error) {
         console.error(error);
-    });
+        res.status(500).send('Error retrieving games data');
+      });
 
 
 }
+
 
 function filterStrategyGamesHandler(request, res) {
-
-
-
+    const genre = 'Strategy';
+  
     const options = {
-        method: 'GET',
-        url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
-        params: { category: 'Strategy' },
-        headers: {
-            'X-RapidAPI-Key': process.env.APIKey,
-            'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
-        }
+      method: 'GET',
+      url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+      headers: {
+        'X-RapidAPI-Key': process.env.APIKey,
+        'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+      }
     };
-
-    axios.request(options).then(function (response) {
-        console.log(response.data);
-        res.send(response.data);
-    }).catch(function (error) {
+  
+    axios.request(options)
+      .then(function (response) {
+        const games = response.data.filter((game) => game.genre.toLowerCase().includes(genre.toLowerCase()));
+        console.log(games);
+        res.send(games);
+      })
+      .catch(function (error) {
         console.error(error);
-    });
-
+        res.status(500).send('Error retrieving games data');
+      });
 
 }
 
-function filterFightingGamesHandler(request, res) {
 
-
-
+function mmoGamesHandler(request, res) {
+    const genre = 'mmo';
+  
     const options = {
-        method: 'GET',
-        url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
-        params: { category: 'Fighting' },
-        headers: {
-            'X-RapidAPI-Key': process.env.APIKey,
-            'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
-        }
+      method: 'GET',
+      url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+      headers: {
+        'X-RapidAPI-Key': process.env.APIKey,
+        'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+      }
     };
-
-    axios.request(options).then(function (response) {
-        console.log(response.data);
-        res.send(response.data);
-    }).catch(function (error) {
+  
+    axios.request(options)
+      .then(function (response) {
+        const games = response.data.filter((game) => game.genre.toLowerCase().includes(genre.toLowerCase()));
+        console.log(games);
+        res.send(games);
+      })
+      .catch(function (error) {
         console.error(error);
-    });
-
+        res.status(500).send('Error retrieving games data');
+      });
 
 }
 
 function filterMOBAGamesHandler(request, res) {
-
-
-
+    const genre = 'MOBA';
+  
     const options = {
-        method: 'GET',
-        url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
-        params: {category: 'MOBA'},
-        headers: {
-          'X-RapidAPI-Key': '04df37f83fmsh09e19e247d3adefp12b631jsnfc3f7ce0007e',
-          'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
-        }
-      };
-
-    axios.request(options).then(function (response) {
-        console.log(response.data);
-        res.send(response.data);
-    }).catch(function (error) {
+      method: 'GET',
+      url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+      headers: {
+        'X-RapidAPI-Key': process.env.APIKey,
+        'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+      }
+    };
+  
+    axios.request(options)
+      .then(function (response) {
+        const games = response.data.filter((game) => game.genre.toLowerCase().includes(genre.toLowerCase()));
+        console.log(games);
+        res.send(games);
+      })
+      .catch(function (error) {
         console.error(error);
-    });
+        res.status(500).send('Error retrieving games data');
+      });
 
 
 }
@@ -289,25 +407,27 @@ function filterMOBAGamesHandler(request, res) {
 
 function filterSportsGamesHandler(request, res) {
 
-
-
+    const genre = 'Sports';
+  
     const options = {
-        method: 'GET',
-        url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
-        params: {category: 'Sports'},
-        headers: {
-          'X-RapidAPI-Key': '04df37f83fmsh09e19e247d3adefp12b631jsnfc3f7ce0007e',
-          'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
-        }
-      };
-
-    axios.request(options).then(function (response) {
-        console.log(response.data);
-        res.send(response.data);
-    }).catch(function (error) {
+      method: 'GET',
+      url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
+      headers: {
+        'X-RapidAPI-Key': process.env.APIKey,
+        'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
+      }
+    };
+  
+    axios.request(options)
+      .then(function (response) {
+        const games = response.data.filter((game) => game.genre.toLowerCase().includes(genre.toLowerCase()));
+        console.log(games);
+        res.send(games);
+      })
+      .catch(function (error) {
         console.error(error);
-    });
-
+        res.status(500).send('Error retrieving games data');
+      });
 
 }
 
