@@ -145,8 +145,8 @@ function updateFavGameHandler(req, res) {
     const id = req.params.id; //fetch path prameters
     const favFreeGame = req.body;
 
-    const sql = `UPDATE favFreeGame SET title=$1, thumbnail=$2, genre=$3, platform=$4, publisher=$5, developer=$6,release_date=$7, short_description=$8, game_url=$9, comment=$10  WHERE id=${id} RETURNING *`
-    const values = [favFreeGame.title, favFreeGame.thumbnail, favFreeGame.genre, favFreeGame.platform, favFreeGame.publisher, favFreeGame.developer, favFreeGame.release_date, favFreeGame.short_description, favFreeGame.game_url, favFreeGame.comment];
+    const sql = `UPDATE favFreeGame SET comment=$1 WHERE id=${id} RETURNING *`
+    const values = [ favFreeGame.comment];
 
     client.query(sql, values)
         .then((result) => {
@@ -189,31 +189,6 @@ function deleteFavGameHandler(req, res) {
         })
 }
 
-
-
-function FightingGamesHandler(request, res) {
-    const genre = 'Fighting';
-  
-    const options = {
-      method: 'GET',
-      url: 'https://free-to-play-games-database.p.rapidapi.com/api/games',
-      headers: {
-        'X-RapidAPI-Key': process.env.APIKey,
-        'X-RapidAPI-Host': 'free-to-play-games-database.p.rapidapi.com'
-      }
-    };
-  
-    axios.request(options)
-      .then(function (response) {
-        const games = response.data.filter((game) => game.genre.toLowerCase().includes(genre.toLowerCase()));
-        console.log(games);
-        res.send(games);
-      })
-      .catch(function (error) {
-        console.error(error);
-        res.status(500).send('Error retrieving games data');
-      });
-  }
 
 
   
