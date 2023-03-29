@@ -23,7 +23,8 @@ const client = new pg.Client(process.env.DATABASE_URL);
 //ROUTES
 server.get('/', homeHandler);
 server.get('/allGame', allGameHandler);// this handler's purpose is to fetch all the data from the API.
-server.get('/allFavGame', allFavGameHandler);// this handler's purpose is to fetch all the data from the favfreegame relation.
+server.get('/allFavGame/:email', allFavGameHandler);// this handler's purpose is to fetch all the data from the favfreegame relation.
+server.post('/user', userHandler); // this handler's purpose is to add data (FavFreegame) to the table.
 
 
 server.post('/addGame', postGameHandler); // this handler's purpose is to add data (FavFreegame) to the table.
@@ -107,7 +108,8 @@ function allGameHandler(request, res) {
 
 
 function allFavGameHandler(req, res) {
-    const sql = `SELECT * FROM favfreegame`;
+  const email =  req.params.email;
+    const sql = `SELECT * FROM favFreeGame WHERE email_user='${email}'`;
     client.query(sql)
         .then((result) => {
             res.status(200).send(result.rows);
@@ -119,13 +121,31 @@ function allFavGameHandler(req, res) {
 }
 
 
+function userHandler(req, res) {
+  const users = req.body; //by default we cant see the body content
+  console.log(users);
+  const sql = `INSERT INTO users (email, name, picture, birthday) VALUES ($1,$2,$3,$4) RETURNING *;`;
+  const values = [users.email, users.name, users.picture, users.birthday];
+  console.log(sql);
+
+  client.query(sql, values)
+      .then((data) => {
+          res.send(data.rows);
+      })
+      .catch(error => {
+          // console.log(error);
+          errorHandler(error, req, res);
+      });
+}
+
+
 
 
 function postGameHandler(req, res) {
     const favFreeGame = req.body; //by default we cant see the body content
     console.log(favFreeGame);
-    const sql = `INSERT INTO favFreeGame (title, thumbnail, genre, platform, publisher, developer, release_date, short_description, game_url, comment) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *;  `;
-    const values = [favFreeGame.title, favFreeGame.thumbnail, favFreeGame.genre, favFreeGame.platform, favFreeGame.publisher, favFreeGame.developer, favFreeGame.release_date, favFreeGame.short_description, favFreeGame.game_url, favFreeGame.comment];
+    const sql = `INSERT INTO favFreeGame (email_user, title, thumbnail, genre, platform, publisher, developer, release_date, short_description, game_url, comment) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *;  `;
+    const values = [favFreeGame.email, favFreeGame.title, favFreeGame.thumbnail, favFreeGame.genre, favFreeGame.platform, favFreeGame.publisher, favFreeGame.developer, favFreeGame.release_date, favFreeGame.short_description, favFreeGame.game_url, favFreeGame.comment];
     console.log(sql);
 
     client.query(sql, values)
