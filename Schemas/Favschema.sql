@@ -20,5 +20,5 @@ CREATE TABLE IF NOT EXISTS favFreeGame (
 );
 
 
-   INSERT INTO favFreeGame (email_user, title, thumbnail, genre, platform, publisher, developer, release_date, short_description, game_url, comment)
+INSERT INTO favFreeGame (email_user, title, thumbnail, genre, platform, publisher, developer, release_date, short_description, game_url, comment)
 VALUES ('user2@example.com', 'therd', 'https://example.com/thumbnail.png', 'Action', 'PC', 'Example Publisher', 'Example Developer', '2022-01-01', 'Short game description', 'https://example.com/game_url', 'This is a comment about the game');

@@ -11,7 +11,7 @@ server.use(cors());
 // server.use(errorHandler)
 server.use(express.json()); //read request body
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const client = new pg.Client(process.env.DATABASE_URL);
 
 // const allGameHandler = require('./Controlers/allGameHandler')
@@ -144,7 +144,7 @@ function userHandler(req, res) {
 function postGameHandler(req, res) {
     const favFreeGame = req.body; //by default we cant see the body content
     console.log(favFreeGame);
-    const sql = `INSERT INTO favFreeGame (email_user, title, thumbnail, genre, platform, publisher, developer, release_date, short_description, game_url, comment) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *;  `;
+    const sql = `INSERT INTO favFreeGame (email_user, title, thumbnail, genre, platform, publisher, developer, release_date, short_description, game_url, comment) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *;`;
     const values = [favFreeGame.email, favFreeGame.title, favFreeGame.thumbnail, favFreeGame.genre, favFreeGame.platform, favFreeGame.publisher, favFreeGame.developer, favFreeGame.release_date, favFreeGame.short_description, favFreeGame.game_url, favFreeGame.comment];
     console.log(sql);
 
